@@ -27,7 +27,8 @@ import java.util.Scanner;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
-
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 
 /**
  * This class defines a simple embedded SQL utility class that is designed to
@@ -311,13 +312,15 @@ public class DBproject{
 		String cost;
 		String num_sold;
 		String num_stops;
-		Date actual_departure_date = new Date();
-		Date actual_arrival_date = new Date();
+		LocalDateTime actual_departure_date;
+		LocalDateTime actual_arrival_date;
 		String arrival_airport;
 		String departure_airport;
 		String query;
+		String dDate;
+		String aDate;
 
-		SimpleDateFormat ft = new SimpleDateFormat("dd-MM-yyyy");
+		DateTimeFormatter ft = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 		String tempDate;
 
 		System.out.print("Enter Flight Number: ");
@@ -329,24 +332,27 @@ public class DBproject{
 		System.out.print("Enter Number of Stops: ");
 		num_stops = input.nextLine();
 //		input.nextLine();
-		System.out.print("Enter Actual Departure Date (dd-MM-yyyy): ");
+		System.out.print("Enter Actual Departure Date (yyyy-MM-dd HH:mm): ");
 		tempDate = input.nextLine();
-		try{
-			actual_departure_date = ft.parse(tempDate);
-		}
-		catch(ParseException e){
-			System.out.println("ERR in parsing Flight Actual Departure Date");
-			System.out.println("Err: " + e);
-		}
-		System.out.print("Enter Actual Arrival Date (dd-MM-yyyy): ");
+//		try{
+			actual_departure_date = LocalDateTime.parse(tempDate, ft);
+			dDate = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(actual_departure_date);
+//		}
+//		catch(ParseException e){
+//			System.out.println("ERR in parsing Flight Actual Departure Date");
+//			System.out.println("Err: " + e);
+//		}
+		System.out.print("Enter Actual Arrival Date (yyyy-MM-dd HH:mm): ");
 		tempDate = input.nextLine();
-		try{
-			actual_arrival_date = ft.parse(tempDate);
-		}
-		catch(ParseException e){
-			System.out.println("ERR in parsing Flight Actual Arrival Date");
-			System.out.println("Err: " + e);
-		}
+//		try{
+			actual_arrival_date = LocalDateTime.parse(tempDate, ft);
+			aDate = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(actual_arrival_date);
+
+//		}
+//		catch(ParseException e){
+//			System.out.println("ERR in parsing Flight Actual Arrival Date");
+//			System.out.println("Err: " + e);
+//		}
 		System.out.print("Enter the Airport of Arrival: ");
 		arrival_airport = input.nextLine();
 		System.out.print("Enter the Airport of Departure: ");
@@ -364,7 +370,7 @@ public class DBproject{
 		System.out.println("Departure Airpot: " + departure_airport);	
 
 
-		query = "INSERT INTO Flight (fnum, cost, num_sold, num_stops, actual_departure_date, actual_arrival_date, arrival_airport, departure_airport) VALUES (" + flightNum + ", " + cost + ", " + num_sold + ", " + num_stops + ", " + actual_departure_date + ", " + actual_arrival_date + ", " + arrival_airport + ", " + departure_airport + ");";
+		query = "INSERT INTO Flight (fnum, cost, num_sold, num_stops, actual_departure_date, actual_arrival_date, arrival_airport, departure_airport) VALUES (" + flightNum + ", " + cost + ", " + num_sold + ", " + num_stops + ", \'" + dDate + "\', \'" + aDate + "\', \'" + arrival_airport + "\', \'" + departure_airport + "\');";
 
 		System.out.println(query);
 		try{
