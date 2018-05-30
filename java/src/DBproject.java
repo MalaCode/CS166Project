@@ -128,7 +128,7 @@ public class DBproject{
 	 * @return the query result as a list of records
 	 * @throws java.sql.SQLException when failed to execute the query
 	 */
-	public List<List<String>> executeQueryAndReturnResult (String query) throws SQLException { 
+	public List<List<String>> executeQueryAndReturnResult (String query) throws SQLException {
 		//creates a statement object 
 		Statement stmt = this._connection.createStatement (); 
 		
@@ -413,9 +413,6 @@ public class DBproject{
 		DateTimeFormatter ft = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 		String tempDate;
 
-
-		
-
 		System.out.print("Enter Flight Number: ");
 		flightNum = input.nextLine();
 		System.out.print("Enter Cost: ");
@@ -537,8 +534,10 @@ public class DBproject{
 
 		System.out.print("Enter Technician ID: ");
 		id = input.nextLine();
-		System.out.print("Enter Full Name of the Technician (can be empty): ");
+		System.out.print("Enter Full Name of the Technician: ");
 		fullName = input.nextLine();
+
+		System.out.println();
 	
 		System.out.println("------------------------------------------------------------------");
 
@@ -567,6 +566,47 @@ public class DBproject{
 
 	public static void ListNumberOfAvailableSeats(DBproject esql) {//6
 		// For flight number and date, find the number of availalbe seats (i.e. total plane capacity minus booked seats )
+		Scanner input = new Scanner(System.in);
+		String flightNum;
+		String tempDate;
+		String sched_dep;
+		LocalDateTime date;
+		String query;
+		DateTimeFormatter ft = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		List<List<String>> res;
+
+
+		System.out.print("Enter Flight Number: ");
+		flightNum = input.nextLine();
+		System.out.print("Enter Date (yyyy-MM-dd): ");
+		tempDate = input.nextLine();
+		date = LocalDateTime.parse(tempDate, ft);
+		sched_dep = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(date);
+
+
+
+		System.out.println();
+
+		System.out.println("------------------------------------------------------------------");
+
+		System.out.println("Flight Number: " + flightNum);
+		System.out.println("Date: " + date.toString());
+
+		query = "SELECT id FROM Schedule WHERE flightNum = " + flightNum + " AND departure_time = \'" + sched_dep + "\');";
+		System.out.println(query);
+
+		try{
+			esql.executeQueryAndReturnResult(query);
+		}
+		catch(SQLException e){
+			System.out.println("ERR in Getting Plane_ID");
+			System.out.println("Err: " + e);
+		}
+
+		System.out.println("------------------------------------------------------------------");
+		System.out.println();
+
+
 	}
 
 	public static void ListsTotalNumberOfRepairsPerPlane(DBproject esql) {//7
