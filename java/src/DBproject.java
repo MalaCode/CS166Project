@@ -306,7 +306,91 @@ public class DBproject{
 	}//end readChoice
 
 	public static void AddPlane(DBproject esql) {//1
-		System.out.println("Adding Plane");
+		String id;
+		String make;	
+		String model;
+		String age;
+		String seats;
+		String query;
+		Scanner input = new Scanner(System.in);
+
+		System.out.print("Enter Plane ID: ");
+		id = input.nextLine();
+		System.out.print("Enter Make: ");
+		make = input.nextLine();
+		System.out.print("Enter Model: ");
+		model = input.nextLine();
+		System.out.print("Enter Age: ");
+		age = input.nextLine();
+		System.out.print("Enter the number of Seats: ");
+		seats = input.nextLine();
+
+		System.out.println("------------------------------------------------------------------");
+
+		System.out.println("Plane ID: " + id);
+		System.out.println("Make: " + make);
+		System.out.println("Model: " + model);		
+		System.out.println("Age: " + age);
+		System.out.println("Number of Seats: " + seats);
+
+		query = "INSERT INTO Plane (id, make, model, age, seats) VALUES (" + id + ", \'" + make + "\', \'" + model + "\', " + age + ", " + seats + ");";
+		//System.out.println(query);
+		
+		try{
+			esql.executeUpdate(query);
+		}
+		catch(SQLException e){
+			System.out.println("ERR in Adding Plane SQL");
+			System.out.println("Err: " + e);
+		}		
+
+
+
+		System.out.println("------------------------------------------------------------------");
+		System.out.println();
+
+	}
+
+	public static void AddPilot(DBproject esql) {//2
+		String id;
+		String fullName;
+		String nationality;
+		String query;
+		Scanner input = new Scanner(System.in);
+
+		System.out.print("Enter Pilot ID: ");
+		id = input.nextLine();
+		System.out.print("Enter Full Name of the Pilot (can be empty): ");
+		fullName = input.nextLine();
+		System.out.print("Enter the Nationality of the Pilot (can be empty): ");
+		nationality = input.nextLine();
+
+		System.out.println("------------------------------------------------------------------");
+
+		System.out.println("Pilot ID: " + id);
+		System.out.println("Full Name: " + fullName);
+		System.out.println("Nationality: " + nationality);
+
+		query = "INSERT INTO Pilot (id, fullname, nationality) VALUES (" + id + ", \'" + fullName + "\', \'" + nationality + "\');";
+
+		//System.out.println(query);
+		try{
+			esql.executeUpdate(query);
+		}
+		catch(SQLException e){
+			System.out.println("ERR in Adding Pilot SQL");
+			System.out.println("Err: " + e);
+		}		
+
+		System.out.println("------------------------------------------------------------------");
+		System.out.println();
+
+	}
+
+	public static void AddFlight(DBproject esql) {//3
+		// Given a pilot, plane and flight, adds a flight in the DB
+
+		
 		Scanner input = new Scanner(System.in);
 		String flightNum;
 		String cost;
@@ -316,12 +400,21 @@ public class DBproject{
 		LocalDateTime actual_arrival_date;
 		String arrival_airport;
 		String departure_airport;
+		LocalDateTime sched_arrive;
+		LocalDateTime sched_depart;
 		String query;
 		String dDate;
 		String aDate;
-
+		String sdDate;
+		String saDate;
+		String PilotID;
+		String PlaneID;
+		
 		DateTimeFormatter ft = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 		String tempDate;
+
+
+		
 
 		System.out.print("Enter Flight Number: ");
 		flightNum = input.nextLine();
@@ -331,35 +424,38 @@ public class DBproject{
 		num_sold = input.nextLine();
 		System.out.print("Enter Number of Stops: ");
 		num_stops = input.nextLine();
-//		input.nextLine();
+
+		System.out.print("Enter Scheduled Departure Date (yyyy-MM-dd HH:mm): ");
+		tempDate = input.nextLine();
+		sched_depart = LocalDateTime.parse(tempDate, ft);
+		sdDate = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(sched_depart);
+		System.out.print("Enter Scheduled Arrival Date (yyyy-MM-dd HH:mm): ");
+		tempDate = input.nextLine();
+		sched_arrive = LocalDateTime.parse(tempDate, ft);
+		saDate = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(sched_arrive);
+
 		System.out.print("Enter Actual Departure Date (yyyy-MM-dd HH:mm): ");
 		tempDate = input.nextLine();
-//		try{
-			actual_departure_date = LocalDateTime.parse(tempDate, ft);
-			dDate = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(actual_departure_date);
-//		}
-//		catch(ParseException e){
-//			System.out.println("ERR in parsing Flight Actual Departure Date");
-//			System.out.println("Err: " + e);
-//		}
+		actual_departure_date = LocalDateTime.parse(tempDate, ft);
+		dDate = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(actual_departure_date);
 		System.out.print("Enter Actual Arrival Date (yyyy-MM-dd HH:mm): ");
 		tempDate = input.nextLine();
-//		try{
-			actual_arrival_date = LocalDateTime.parse(tempDate, ft);
-			aDate = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(actual_arrival_date);
-
-//		}
-//		catch(ParseException e){
-//			System.out.println("ERR in parsing Flight Actual Arrival Date");
-//			System.out.println("Err: " + e);
-//		}
+		actual_arrival_date = LocalDateTime.parse(tempDate, ft);
+		aDate = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(actual_arrival_date);
 		System.out.print("Enter the Airport of Arrival: ");
 		arrival_airport = input.nextLine();
 		System.out.print("Enter the Airport of Departure: ");
 		departure_airport = input.nextLine();
+		System.out.print("Enter PilotID: ");
+		PilotID = input.nextLine();
+		System.out.print("Enter PlaneID (can be blank): ");
+		PlaneID = input.nextLine();
+
+		System.out.println();
 
 		System.out.println("------------------------------------------------------------------");
-
+	
+		System.out.println("Adding to Flight");
 		System.out.println("Flight Number: " + flightNum);
 		System.out.println("Cost: " + cost);
 		System.out.println("Number of Seats Sold: " + num_sold);
@@ -372,25 +468,97 @@ public class DBproject{
 
 		query = "INSERT INTO Flight (fnum, cost, num_sold, num_stops, actual_departure_date, actual_arrival_date, arrival_airport, departure_airport) VALUES (" + flightNum + ", " + cost + ", " + num_sold + ", " + num_stops + ", \'" + dDate + "\', \'" + aDate + "\', \'" + arrival_airport + "\', \'" + departure_airport + "\');";
 
-		System.out.println(query);
+		//System.out.println(query);
 		try{
-			esql.executeQueryAndPrintResult(query);
+			esql.executeUpdate(query);
 		}
 		catch(SQLException e){
 			System.out.println("ERR in Adding Flight SQL");
 			System.out.println("Err: " + e);
 		}
-		 
-	}
 
-	public static void AddPilot(DBproject esql) {//2
-	}
+		System.out.println();
 
-	public static void AddFlight(DBproject esql) {//3
-		// Given a pilot, plane and flight, adds a flight in the DB
+		System.out.println("------------------------------------------------------------------");
+		System.out.println("------------------------------------------------------------------");
+
+		System.out.println("Adding to Schedule");
+		System.out.println("ID: " + flightNum);
+		System.out.println("Flight Number: " + flightNum);
+		System.out.println("Scheduled Departure Date: " + sdDate); 
+		System.out.println("Scheduled Arrival Date: " + saDate);
+
+		query = "INSERT INTO Schedule (id, flightNum, departure_time, arrival_time) VALUES (" + flightNum + ", " + flightNum + ", \'" + sdDate + "\', \'" + saDate + "\');";
+
+		System.out.println(query);
+		try{
+			esql.executeUpdate(query);
+		}
+		catch(SQLException e){
+			System.out.println("ERR in Adding Schedule SQL");
+			System.out.println("Err: " + e);
+		}
+
+
+
+
+		System.out.println("------------------------------------------------------------------");
+
+		System.out.println("------------------------------------------------------------------");
+
+		System.out.println("Adding to Flight Info");
+		System.out.println("ID: " + flightNum);
+		System.out.println("Flight Number: " + flightNum);
+		System.out.println("PilotID: " + PilotID); 
+		System.out.println("PlaneID: " + PlaneID);
+
+		query = "INSERT INTO FlightInfo (fiid, flight_id, pilot_id, plane_id) VALUES (" + flightNum + ", " + flightNum + ", " + PilotID + ", " + PlaneID + ");";
+
+		System.out.println(query);
+		try{
+			esql.executeUpdate(query);
+		}
+		catch(SQLException e){
+			System.out.println("ERR in Adding Flight Info SQL");
+			System.out.println("Err: " + e);
+		}
+
+		System.out.println("------------------------------------------------------------------");
+		System.out.println();
+		
 	}
 
 	public static void AddTechnician(DBproject esql) {//4
+
+		String id;
+		String fullName;
+		String query;
+		Scanner input = new Scanner(System.in);
+
+		System.out.print("Enter Technician ID: ");
+		id = input.nextLine();
+		System.out.print("Enter Full Name of the Technician (can be empty): ");
+		fullName = input.nextLine();
+	
+		System.out.println("------------------------------------------------------------------");
+
+		System.out.println("Technician ID: " + id);
+		System.out.println("Full Name: " + fullName);
+
+		query = "INSERT INTO Technician (id, full_name) VALUES (" + id + ", \'" + fullName + "\');";
+
+		System.out.println(query);
+		try{
+			esql.executeUpdate(query);
+		}
+		catch(SQLException e){
+			System.out.println("ERR in Adding Pilot SQL");
+			System.out.println("Err: " + e);
+		}		
+
+		System.out.println("------------------------------------------------------------------");
+		System.out.println();
+
 	}
 
 	public static void BookFlight(DBproject esql) {//5
