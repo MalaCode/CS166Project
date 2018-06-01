@@ -29,6 +29,8 @@ import java.text.SimpleDateFormat;
 import java.text.ParseException;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.DateTimeException;
 
 /**
  * This class defines a simple embedded SQL utility class that is designed to
@@ -307,23 +309,36 @@ public class DBproject{
 
 	public static void AddPlane(DBproject esql) {//1
 		String id;
-		String make;	
-		String model;
-		String age;
-		String seats;
+		String make = "1";	
+		String model = "1";
+		String age = "a";
+		String seats = "a";
 		String query;
 		Scanner input = new Scanner(System.in);
 
 		System.out.print("Enter Plane ID: ");
 		id = input.nextLine();
+		//while(make.matches(".*\\d+.*")){
 		System.out.print("Enter Make: ");
 		make = input.nextLine();
+		//}
 		System.out.print("Enter Model: ");
 		model = input.nextLine();
-		System.out.print("Enter Age: ");
-		age = input.nextLine();
-		System.out.print("Enter the number of Seats: ");
-		seats = input.nextLine();
+		while(!age.matches("[0-9]+")){
+			System.out.print("Enter Age: ");
+			age = input.nextLine();
+			if(!age.matches("[0-9]+")){
+				System.out.println("Invalid input, please enter a Number");
+			}
+		}
+		while(!seats.matches("[0-9]+")){
+			System.out.print("Enter the number of Seats: ");
+			seats = input.nextLine();
+			if(!seats.matches("[0-9]+")){
+				System.out.println("Invalid input, please enter a Number");
+			}
+
+		}
 
 		System.out.println("------------------------------------------------------------------");
 
@@ -340,11 +355,10 @@ public class DBproject{
 			esql.executeUpdate(query);
 		}
 		catch(SQLException e){
-			System.out.println("ERR in Adding Plane SQL");
+			System.out.println("Error! Flight Already Exists. Please Try again");
 			System.out.println("Err: " + e);
+			return;
 		}		
-
-
 
 		System.out.println("------------------------------------------------------------------");
 		System.out.println();
@@ -353,18 +367,30 @@ public class DBproject{
 
 	public static void AddPilot(DBproject esql) {//2
 		String id;
-		String fullName;
-		String nationality;
+		String fullName = "1";
+		String nationality = "1";
 		String query;
 		Scanner input = new Scanner(System.in);
 
 		System.out.print("Enter Pilot ID: ");
 		id = input.nextLine();
-		System.out.print("Enter Full Name of the Pilot (can be empty): ");
-		fullName = input.nextLine();
-		System.out.print("Enter the Nationality of the Pilot (can be empty): ");
-		nationality = input.nextLine();
 
+		while(fullName.matches(".*\\d+.*")){
+			System.out.print("Enter Full Name of the Pilot (can be empty): ");
+			fullName = input.nextLine();
+			if(fullName.matches(".*\\d+.*")){
+				System.out.println("Invalid input, please enter a String without numbers");
+			}
+		}
+
+		while(nationality.matches(".*\\d+.*")){
+			System.out.print("Enter the Nationality of the Pilot (can be empty): ");
+			nationality = input.nextLine();
+			if(nationality.matches(".*\\d+.*")){
+				System.out.println("Invalid input, please enter a String without numbers");
+			}
+		}
+		
 		System.out.println("------------------------------------------------------------------");
 
 		System.out.println("Pilot ID: " + id);
@@ -378,10 +404,10 @@ public class DBproject{
 			esql.executeUpdate(query);
 		}
 		catch(SQLException e){
-			System.out.println("ERR in Adding Pilot SQL");
+			System.out.println("Error, Pilot with this ID already Exists! Please try again.");
 			System.out.println("Err: " + e);
+			return;
 		}		
-
 		System.out.println("------------------------------------------------------------------");
 		System.out.println();
 
@@ -389,65 +415,140 @@ public class DBproject{
 
 	public static void AddFlight(DBproject esql) {//3
 		// Given a pilot, plane and flight, adds a flight in the DB
-
 		
 		Scanner input = new Scanner(System.in);
 		String flightNum;
-		String cost;
-		String num_sold;
-		String num_stops;
-		LocalDateTime actual_departure_date;
-		LocalDateTime actual_arrival_date;
-		String arrival_airport;
-		String departure_airport;
-		LocalDateTime sched_arrive;
-		LocalDateTime sched_depart;
+		String cost = "a";
+		String num_sold = "a";
+		String num_stops = "a";
+		LocalDateTime actual_departure_date = null;
+		LocalDateTime actual_arrival_date = null;
+		String arrival_airport = "1";
+		String departure_airport = "1";
+		LocalDateTime sched_arrive = null;
+		LocalDateTime sched_depart = null;
 		String query;
 		String dDate;
 		String aDate;
 		String sdDate;
 		String saDate;
-		String PilotID;
-		String PlaneID;
+		String PilotID = "a";
+		String PlaneID = "a";
+		Boolean isValid = false;
 		
 		DateTimeFormatter ft = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 		String tempDate;
 
 		System.out.print("Enter Flight Number: ");
 		flightNum = input.nextLine();
-		System.out.print("Enter Cost: ");
-		cost = input.nextLine();
-		System.out.print("Enter Number of Seats Sold: ");
-		num_sold = input.nextLine();
-		System.out.print("Enter Number of Stops: ");
-		num_stops = input.nextLine();
 
-		System.out.print("Enter Scheduled Departure Date (yyyy-MM-dd HH:mm): ");
-		tempDate = input.nextLine();
-		sched_depart = LocalDateTime.parse(tempDate, ft);
+		while(!cost.matches("[0-9]+")){
+			System.out.print("Enter Cost: ");
+			cost = input.nextLine();
+			if(!cost.matches("[0-9]+")){
+				System.out.println("Invalid input, please enter a Number");
+			}
+		}
+		while(!num_sold.matches("[0-9]+")){
+			System.out.print("Enter Number of Seats Sold: ");
+			num_sold = input.nextLine();
+			if(!num_sold.matches("[0-9]+")){
+				System.out.println("Invalid input, please enter a Number");
+			}
+		}
+		while(!num_stops.matches("[0-9]+")){
+			System.out.print("Enter Number of Stops: ");
+			num_stops = input.nextLine();
+			if(!num_stops.matches("[0-9]+")){
+				System.out.println("Invalid input, please enter a Number");
+			}
+		}
+		while(!isValid){		
+			isValid = true;
+			System.out.print("Enter Scheduled Departure Date (yyyy-MM-dd HH:mm): ");
+			tempDate = input.nextLine();
+			try{
+				sched_depart = LocalDateTime.parse(tempDate, ft);
+			}
+			catch(DateTimeException e){
+				System.out.println("Not a Valid Date, Pleased enter Date in the format yyyy-MM-dd");
+				isValid = false;
+			}
+		}
+		isValid = false;
 		sdDate = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(sched_depart);
-		System.out.print("Enter Scheduled Arrival Date (yyyy-MM-dd HH:mm): ");
-		tempDate = input.nextLine();
-		sched_arrive = LocalDateTime.parse(tempDate, ft);
+		while(!isValid){
+			isValid = true;
+			System.out.print("Enter Scheduled Arrival Date (yyyy-MM-dd HH:mm): ");
+			tempDate = input.nextLine();	
+			try{
+				sched_arrive = LocalDateTime.parse(tempDate, ft);
+			}
+			catch(DateTimeException e){
+				System.out.println("Not a Valid Date, Pleased enter Date in the format yyyy-MM-dd");
+				isValid = false;
+			}
+		}
 		saDate = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(sched_arrive);
-
-		System.out.print("Enter Actual Departure Date (yyyy-MM-dd HH:mm): ");
-		tempDate = input.nextLine();
-		actual_departure_date = LocalDateTime.parse(tempDate, ft);
+		isValid = false;
+		while(!isValid){
+			isValid = true;
+			System.out.print("Enter Actual Departure Date (yyyy-MM-dd HH:mm): ");
+			tempDate = input.nextLine();
+			try{
+				actual_departure_date = LocalDateTime.parse(tempDate, ft);
+			}
+			catch(DateTimeException e){
+				System.out.println("Not a Valid Date, Pleased enter Date in the format yyyy-MM-dd");
+				isValid = false;
+			}
+		}
 		dDate = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(actual_departure_date);
-		System.out.print("Enter Actual Arrival Date (yyyy-MM-dd HH:mm): ");
-		tempDate = input.nextLine();
-		actual_arrival_date = LocalDateTime.parse(tempDate, ft);
+		isValid = false;
+		while(!isValid){
+			isValid = true;
+			System.out.print("Enter Actual Arrival Date (yyyy-MM-dd HH:mm): ");
+			tempDate = input.nextLine();
+			try{
+				actual_arrival_date = LocalDateTime.parse(tempDate, ft);
+			}
+			catch(DateTimeException e){
+				System.out.println("Not a Valid Date, Pleased enter Date in the format yyyy-MM-dd");
+				isValid = false;
+			}
+		}
+		isValid = false;
 		aDate = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(actual_arrival_date);
-		System.out.print("Enter the Airport of Arrival: ");
-		arrival_airport = input.nextLine();
-		System.out.print("Enter the Airport of Departure: ");
-		departure_airport = input.nextLine();
-		System.out.print("Enter PilotID: ");
-		PilotID = input.nextLine();
-		System.out.print("Enter PlaneID (can be blank): ");
-		PlaneID = input.nextLine();
+		while(arrival_airport.matches(".*\\d+.*")){
+			System.out.print("Enter the Airport of Arrival: ");
+			arrival_airport = input.nextLine();
+			if(arrival_airport.matches(".*\\d+.*")){
+				System.out.println("Invalid input, please enter a String without numbers");
+			}
+		}
+		while(departure_airport.matches(".*\\d+.*")){
+			System.out.print("Enter the Airport of Departure: ");
+			departure_airport = input.nextLine();
+			if(departure_airport.matches(".*\\d+.*")){
+				System.out.println("Invalid input, please enter a String without numbers");
+			}
+		}
+		while(!PilotID.matches("[0-9]+")){
+			System.out.print("Enter PilotID: ");
+			PilotID = input.nextLine();
+			if(!PilotID.matches("[0-9]+")){
+				System.out.println("Invalid input, please enter a Number");
+			}
+		}
+		while(!PlaneID.matches("[0-9]+")){
+			System.out.print("Enter PlaneID: ");
+			PlaneID = input.nextLine();
+			if(!PlaneID.matches("[0-9]+")){
+				System.out.println("Invalid input, please enter a Number");
+			}
+		}
 
+		
 		System.out.println();
 
 		System.out.println("------------------------------------------------------------------");
@@ -464,18 +565,17 @@ public class DBproject{
 
 
 		query = "INSERT INTO Flight (fnum, cost, num_sold, num_stops, actual_departure_date, actual_arrival_date, arrival_airport, departure_airport) VALUES (" + flightNum + ", " + cost + ", " + num_sold + ", " + num_stops + ", \'" + dDate + "\', \'" + aDate + "\', \'" + arrival_airport + "\', \'" + departure_airport + "\');";
-
 		//System.out.println(query);
 		try{
 			esql.executeUpdate(query);
 		}
 		catch(SQLException e){
-			System.out.println("ERR in Adding Flight SQL");
+			System.out.println("Flight Already Exists! Please try again.");
 			System.out.println("Err: " + e);
+			return;
 		}
 
 		System.out.println();
-
 		System.out.println("------------------------------------------------------------------");
 		System.out.println("------------------------------------------------------------------");
 
@@ -492,15 +592,12 @@ public class DBproject{
 			esql.executeUpdate(query);
 		}
 		catch(SQLException e){
-			System.out.println("ERR in Adding Schedule SQL");
+			System.out.println("Flight has already been scheduled! Please try again.");
 			System.out.println("Err: " + e);
+			return;
 		}
 
-
-
-
 		System.out.println("------------------------------------------------------------------");
-
 		System.out.println("------------------------------------------------------------------");
 
 		System.out.println("Adding to Flight Info");
@@ -510,42 +607,194 @@ public class DBproject{
 		System.out.println("PlaneID: " + PlaneID);
 
 		query = "INSERT INTO FlightInfo (fiid, flight_id, pilot_id, plane_id) VALUES (" + flightNum + ", " + flightNum + ", " + PilotID + ", " + PlaneID + ");";
-
 		System.out.println(query);
 		try{
 			esql.executeUpdate(query);
 		}
 		catch(SQLException e){
-			System.out.println("ERR in Adding Flight Info SQL");
+			System.out.println("Error in adding Flight Information, please make sure PilotID, PlaneID, and Flight Number exist and the Flight is not already schedule.");
 			System.out.println("Err: " + e);
+			return;
 		}
 
 		System.out.println("------------------------------------------------------------------");
 		System.out.println();
-		
 	}
 
 	public static void AddTechnician(DBproject esql) {//4
 
-		String id;
-		String fullName;
+		String id = "a";
+		String fullName = "1";
 		String query;
 		Scanner input = new Scanner(System.in);
 
-		System.out.print("Enter Technician ID: ");
-		id = input.nextLine();
-		System.out.print("Enter Full Name of the Technician: ");
-		fullName = input.nextLine();
+		while(!id.matches("[0-9]+")){
+			System.out.print("Enter Technician ID: ");
+			id = input.nextLine();
+			if(!id.matches("[0-9]+")){
+				System.out.println("Invalid input, please enter a Number");
+			}
+		}
+		while(fullName.matches(".*\\d+.*")){
+			System.out.print("Enter Full Name of the Technician: ");
+			fullName = input.nextLine();
+			if(fullName.matches(".*\\d+.*")){
+				System.out.println("Invalid input, please enter a String without numbers");
+			}
+		}
 
 		System.out.println();
-	
 		System.out.println("------------------------------------------------------------------");
 
 		System.out.println("Technician ID: " + id);
 		System.out.println("Full Name: " + fullName);
 
 		query = "INSERT INTO Technician (id, full_name) VALUES (" + id + ", \'" + fullName + "\');";
+//		System.out.println(quiery);
+		try{
+			esql.executeUpdate(query);
+		}
+		catch(SQLException e){
+			System.out.println("Error, Technician with this ID already exists! Please try again.");
+			System.out.println("Err: " + e);
+		}		
 
+		System.out.println("------------------------------------------------------------------");
+		System.out.println();
+	}
+
+	public static void BookFlight(DBproject esql) {//5
+		// Given a customer and a flight that he/she wants to book, add a reservation to the DB
+		
+		Scanner input = new Scanner(System.in);
+		String flightNum = "a";
+		String customerID = "a";
+		String tempDate;
+		String sched_dep;
+		LocalDate date = null;
+		String query;
+		DateTimeFormatter ft = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		List<List<String>> res;
+		Integer numSeats = -1;
+		Integer numReserve = -1;
+		Integer currRNum = -1;
+		Character status = 'R';
+		Boolean isValid = false;
+
+		while(!flightNum.matches("[0-9]+")){
+			System.out.print("Enter Flight Number: ");
+			flightNum = input.nextLine();
+			if(!flightNum.matches("[0-9]+")){
+				System.out.println("Invalid input, please enter a Number");
+			}
+		}		
+		while(!(isValid)){
+			isValid = true;
+			System.out.print("Enter Date (yyyy-MM-dd): ");
+			tempDate = input.nextLine();
+			try{
+				date = LocalDate.parse(tempDate, ft);
+			}
+			catch(DateTimeException e){
+				System.out.println("Not a Valid Date, Pleased enter Date in the format yyyy-MM-dd");
+				isValid = false;
+			}
+			
+		}
+		sched_dep = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(date);		
+		while(!customerID.matches("[0-9]+")){
+			System.out.print("Enter Customer ID: ");
+			customerID = input.nextLine(); 
+			if(!customerID.matches("[0-9]+")){
+				System.out.println("Invalid input, please enter a Number");
+			}
+		}		
+
+		System.out.println();
+		System.out.println("------------------------------------------------------------------");
+
+		System.out.println("Flight Number: " + flightNum);
+		System.out.println("Scheduled Date of Departure: " + sched_dep);
+		System.out.println("Customer ID: " + customerID);
+
+		query = "SELECT P.seats FROM Plane P, Schedule S, FlightInfo F WHERE S.flightNum = " + flightNum + " AND S.departure_time = \'" + sched_dep + "\' AND S.flightNum = F.flight_id AND F.plane_id = P.id;";
+//		System.out.println(query);
+		try{
+			res = esql.executeQueryAndReturnResult(query);
+			for (List<String> l1 : res) {
+			   for (String s : l1) {
+			   	//System.out.print(s + " "); 
+				numSeats = Integer.parseInt(s);
+			   }
+//			   System.out.println();
+			} 
+//			System.out.println(numSeats);
+		}
+		catch(SQLException e){
+			System.out.println("Error, Please make sure that the Flight exists and is properly scheduled! Please try again");
+			System.out.println("Err: " + e);
+			return;
+		}
+		if(numSeats == -1){
+			System.out.println("Flight does not Exist, Please Try Again");
+			return;
+		}
+	
+//		query = "SELECT COUNT(*) FROM Reservation R, Schedule S WHERE S.flightNum = " + flightNum + " AND " + "S.departure_time = \'" + sched_dep + "\' AND " + "R.fid = " + flightNum + " AND R.status = 'R';";
+		query = "SELECT COUNT(*) FROM Reservation WHERE fid = " + flightNum + " AND status = 'R';";
+//		System.out.println(query);
+		try{
+			res = esql.executeQueryAndReturnResult(query);
+			for (List<String> l1 : res) {
+			   for (String s : l1) {
+//			   	System.out.print(s + " "); 
+				numReserve = Integer.parseInt(s);
+			   }
+//			   System.out.println();
+			} 
+//			System.out.println(numReserve);
+		}
+		catch(SQLException e){
+			System.out.println("ERR in Getting Plane_ID");
+			System.out.println("Err: " + e);
+		}
+
+		query = "SELECT MAX(rnum) FROM Reservation;";
+		System.out.println(query);
+		try{
+			res = esql.executeQueryAndReturnResult(query);
+
+			for (List<String> l1 : res) {
+			   for (String s : l1) {
+//			   	System.out.print(s + " "); 
+				currRNum = Integer.parseInt(s);
+			   }
+//			   System.out.println();
+			} 
+			currRNum += 1;
+			System.out.println(currRNum);
+		}
+		catch(SQLException e){
+			System.out.println("ERR in Getting Plane_ID");
+			System.out.println("Err: " + e);
+		}
+
+//		System.out.println(numSeats-numReserve);
+		if((numSeats-numReserve) <= 0){
+			System.out.print("The Flight is full, would you like to be waitlisted? (y/n)");
+			String temp = input.nextLine();
+			if(temp.equals("n")){
+				System.out.println("Returning to main menu");
+				System.out.println();
+				return;
+			}
+			else{
+				System.out.println("Placing on the waitlist");
+				status = 'W';
+			}
+		}
+
+		query = "INSERT INTO Reservation (rnum, cid, fid, status) VALUES (" + currRNum + ", " + customerID + ", " + flightNum + ", \'" + status + "\');";
 		System.out.println(query);
 		try{
 			esql.executeUpdate(query);
@@ -557,55 +806,96 @@ public class DBproject{
 
 		System.out.println("------------------------------------------------------------------");
 		System.out.println();
-
-	}
-
-	public static void BookFlight(DBproject esql) {//5
-		// Given a customer and a flight that he/she wants to book, add a reservation to the DB
 	}
 
 	public static void ListNumberOfAvailableSeats(DBproject esql) {//6
 		// For flight number and date, find the number of availalbe seats (i.e. total plane capacity minus booked seats )
 		Scanner input = new Scanner(System.in);
-		String flightNum;
+		String flightNum = "a";
 		String tempDate;
 		String sched_dep;
-		LocalDateTime date;
+		LocalDate date = null;
 		String query;
 		DateTimeFormatter ft = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		List<List<String>> res;
+		Integer numSeats = -1;
+		Integer numReserve = -1;
+		Boolean isValid = false;
 
-
-		System.out.print("Enter Flight Number: ");
-		flightNum = input.nextLine();
-		System.out.print("Enter Date (yyyy-MM-dd): ");
-		tempDate = input.nextLine();
-		date = LocalDateTime.parse(tempDate, ft);
-		sched_dep = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(date);
-
-
-
+		while(!flightNum.matches("[0-9]+")){
+			System.out.print("Enter Flight Number: ");
+			flightNum = input.nextLine();
+			if(!flightNum.matches("[0-9]+")){
+				System.out.println("Invalid input, please enter a Number");
+			}
+		}
+		while(!(isValid)){
+			isValid = true;
+			System.out.print("Enter Date (yyyy-MM-dd): ");
+			tempDate = input.nextLine();
+			try{
+				date = LocalDate.parse(tempDate, ft);
+			}
+			catch(DateTimeException e){
+				System.out.println("Not a Valid Date, Pleased enter Date in the format yyyy-MM-dd");
+				isValid = false;
+			}
+		}
+		sched_dep = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(date);		
 		System.out.println();
-
 		System.out.println("------------------------------------------------------------------");
 
 		System.out.println("Flight Number: " + flightNum);
 		System.out.println("Date: " + date.toString());
 
-		query = "SELECT id FROM Schedule WHERE flightNum = " + flightNum + " AND departure_time = \'" + sched_dep + "\');";
-		System.out.println(query);
-
+		query = "SELECT P.seats FROM Plane P, Schedule S, FlightInfo F WHERE S.flightNum = " + flightNum + " AND S.departure_time = \'" + sched_dep + "\' AND S.flightNum = F.flight_id AND F.plane_id = P.id;";
+//		System.out.println(query);
 		try{
-			esql.executeQueryAndReturnResult(query);
+			res = esql.executeQueryAndReturnResult(query);
+			for (List<String> l1 : res) {
+			   for (String s : l1) {
+//			   	System.out.print(s + " "); 
+				numSeats = Integer.parseInt(s);
+			   }
+//			   System.out.println();
+			} 
+//			System.out.println(numSeats);
 		}
 		catch(SQLException e){
-			System.out.println("ERR in Getting Plane_ID");
+			System.out.println("ERR in Getting the Seats from the Flight. Please make sure the plane is properly scheduled. Please Try Again.");
 			System.out.println("Err: " + e);
+			return;
 		}
+		if(numSeats == -1){
+			System.out.println("Flight Does not Exist. Please Try Again");
+			return;
+		}
+
+		query = "SELECT COUNT(*) FROM Reservation WHERE fid = " + flightNum + " AND (status = 'R' OR status = 'C');";
+//		System.out.println(query);
+		try{
+			res = esql.executeQueryAndReturnResult(query);
+			for (List<String> l1 : res) {
+			   for (String s : l1) {
+//			   	System.out.print(s + " "); 
+				numReserve = Integer.parseInt(s);
+			   }
+//			   System.out.println();
+			} 
+//			System.out.println(numReserve);
+		}
+		catch(SQLException e){
+			System.out.println("ERR in Getting the number of Reservations");
+			System.out.println("Err: " + e);
+			return;
+		}
+
+		System.out.print("Number of Remaining Seats: ");
+		System.out.println(numSeats-numReserve);
 
 		System.out.println("------------------------------------------------------------------");
 		System.out.println();
-
+		
 
 	}
 
@@ -619,5 +909,140 @@ public class DBproject{
 	
 	public static void FindPassengersCountWithStatus(DBproject esql) {//9
 		// Find how many passengers there are with a status (i.e. W,C,R) and list that number.
+
+		Scanner input = new Scanner(System.in);
+		String flightNum = "a";
+		String tempDate;
+		String sched_dep;
+		System.out.println("------------------------------------------------------------------");
+		System.out.println();
+		Boolean isValid = false;	
+
+		LocalDate date = null;
+		String query;
+		DateTimeFormatter ft = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		List<List<String>> res;
+		Integer numSeats = -1;
+		Integer numReserve = 0;
+		Integer numWaitlist = 0;
+		Integer Completed = 0;
+
+		while(!flightNum.matches("[0-9]+")){
+			System.out.print("Enter Flight Number: ");
+			flightNum = input.nextLine();
+			if(!flightNum.matches("[0-9]+")){
+				System.out.println("Invalid input, please enter a Number");
+			}
+		}
+		while(!(isValid)){
+			isValid = true;
+			System.out.print("Enter Date (yyyy-MM-dd): ");
+			tempDate = input.nextLine();
+			try{
+				date = LocalDate.parse(tempDate, ft);
+			}
+			catch(DateTimeException e){
+				System.out.println("Not a Valid Date, Pleased enter Date in the format yyyy-MM-dd");
+				isValid = false;
+			}
+			
+		}
+		sched_dep = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(date);
+
+		System.out.println();	
+		System.out.println("------------------------------------------------------------------");
+
+		System.out.println("Flight Number: " + flightNum);
+		System.out.println("Schedule Date of Departure: " + sched_dep);
+
+		query = "SELECT P.seats FROM Plane P, Schedule S, FlightInfo F WHERE S.flightNum = " + flightNum + " AND S.departure_time = \'" + sched_dep + "\' AND S.flightNum = F.flight_id AND F.plane_id = P.id;";
+		//System.out.println(query);
+		try{
+			res = esql.executeQueryAndReturnResult(query);
+			for (List<String> l1 : res) {
+			   for (String s : l1) {
+//			   	System.out.print(s + " "); 
+				numSeats = Integer.parseInt(s);
+			   }
+//			   System.out.println();
+			} 
+//			System.out.println(numSeats);
+		}
+		catch(SQLException e){
+			System.out.println("Err in getting the number of seats for the flight. Please make sure that the flight exists and is properly scheduled. Please try again.");
+			System.out.println("Err: " + e);
+			return;
+		}
+		if(numSeats == -1){
+			System.out.println("Flight Does not Exist");
+			return;
+		}
+
+		query = "SELECT COUNT(*) FROM Reservation R, Schedule S, FlightInfo F WHERE S.flightNum = " + flightNum + " AND S.departure_time = \'" + sched_dep + "\' AND S.flightNum = F.flight_id AND R.fid = S.flightNum AND R.status = 'R';";
+		//System.out.println(query);
+		try{
+			res = esql.executeQueryAndReturnResult(query);
+			for (List<String> l1 : res) {
+			   for (String s : l1) {
+//			   	System.out.print(s + " "); 
+				numReserve = Integer.parseInt(s);
+			   }
+//			   System.out.println();
+			} 
+//			System.out.println(numSeats);
+		}
+		catch(SQLException e){
+			System.out.println("Err in getting the number of reservations for the flight. Please make sure that the flight exists and is properly scheduled. Please try again.");
+			System.out.println("Err: " + e);
+			return;
+		}
+
+		query = "SELECT COUNT(*) FROM Reservation R, Schedule S, FlightInfo F WHERE S.flightNum = " + flightNum + " AND S.departure_time = \'" + sched_dep + "\' AND S.flightNum = F.flight_id AND R.fid = S.flightNum AND R.status = 'W';";
+		//System.out.println(query);
+		try{
+			res = esql.executeQueryAndReturnResult(query);
+			for (List<String> l1 : res) {
+			   for (String s : l1) {
+//			   	System.out.print(s + " "); 
+				numWaitlist = Integer.parseInt(s);
+			   }
+//			   System.out.println();
+			} 
+//			System.out.println(numSeats);
+		}
+		catch(SQLException e){
+			System.out.println("Err in getting the number of waitlist for the flight. Please make sure that the flight exists and is properly scheduled. Please try again.");
+			System.out.println("Err: " + e);
+			return;
+		}
+
+		query = "SELECT COUNT(*) FROM Reservation R, Schedule S, FlightInfo F WHERE S.flightNum = " + flightNum + " AND S.departure_time = \'" + sched_dep + "\' AND S.flightNum = F.flight_id AND R.fid = S.flightNum AND R.status = 'C';";
+		//System.out.println(query);
+		try{
+			res = esql.executeQueryAndReturnResult(query);
+			for (List<String> l1 : res) {
+			   for (String s : l1) {
+//			   	System.out.print(s + " "); 
+				Completed = Integer.parseInt(s);
+			   }
+//			   System.out.println();
+			} 
+//			System.out.println(numSeats);
+		}
+		catch(SQLException e){
+			System.out.println("Err in getting the number of completed for the flight. Please make sure that the flight exists and is properly scheduled. Please try again.");
+			System.out.println("Err: " + e);
+			return;
+		}
+
+		System.out.print("Number of Reserved Seats: ");
+		System.out.println(numReserve);	
+		System.out.print("Number of Waitlisted Seats: ");
+		System.out.println(numWaitlist);	
+		System.out.print("Number of Completed Seats: ");
+		System.out.println(Completed);	
+		
+		System.out.println("------------------------------------------------------------------");
+		System.out.println();
 	}
 }
