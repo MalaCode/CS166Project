@@ -308,16 +308,40 @@ public class DBproject{
 	}//end readChoice
 
 	public static void AddPlane(DBproject esql) {//1
-		String id;
+		Integer id = -1;
 		String make = "1";	
 		String model = "1";
 		String age = "a";
 		String seats = "a";
+		Integer currID;
 		String query;
 		Scanner input = new Scanner(System.in);
+		List<List<String>> res;
 
-		System.out.print("Enter Plane ID: ");
-		id = input.nextLine();
+//		System.out.print("Enter Plane ID: ");
+//		id = input.nextLine();
+
+		query = "SELECT MAX(id) FROM Plane;";
+//		System.out.println(query);
+		try{
+			res = esql.executeQueryAndReturnResult(query);
+
+			for (List<String> l1 : res) {
+			   for (String s : l1) {
+//			   	System.out.print(s + " "); 
+				id = Integer.parseInt(s);
+			   }
+//			   System.out.println();
+			} 
+			id += 1;
+		}
+		catch(SQLException e){
+			System.out.println("ERR in Getting Plane ID");
+			System.out.println("Err: " + e);
+			System.out.println("------------------------------------------------------------------");
+			System.out.println();
+		}
+
 		//while(make.matches(".*\\d+.*")){
 		System.out.print("Enter Make: ");
 		make = input.nextLine();
@@ -357,6 +381,8 @@ public class DBproject{
 		catch(SQLException e){
 			System.out.println("Error! Flight Already Exists. Please Try again");
 			System.out.println("Err: " + e);
+			System.out.println("------------------------------------------------------------------");
+			System.out.println();
 			return;
 		}		
 
@@ -366,14 +392,37 @@ public class DBproject{
 	}
 
 	public static void AddPilot(DBproject esql) {//2
-		String id;
+		Integer id = -1;
 		String fullName = "1";
 		String nationality = "1";
 		String query;
+		List<List<String>> res;
 		Scanner input = new Scanner(System.in);
 
-		System.out.print("Enter Pilot ID: ");
-		id = input.nextLine();
+//		System.out.print("Enter Pilot ID: ");
+//		id = input.nextLine();
+	
+		query = "SELECT MAX(id) FROM Pilot;";
+//		System.out.println(query);
+		try{
+			res = esql.executeQueryAndReturnResult(query);
+			for (List<String> l1 : res) {
+			   for (String s : l1) {
+//			   	System.out.print(s + " "); 
+				id = Integer.parseInt(s);
+			   }
+//			   System.out.println();
+			} 
+			id += 1;
+		}
+		catch(SQLException e){
+			System.out.println("ERR in Getting Pilot ID");
+			System.out.println("Err: " + e);
+			System.out.println("------------------------------------------------------------------");
+			System.out.println();
+			return;
+		}
+
 
 		while(fullName.matches(".*\\d+.*")){
 			System.out.print("Enter Full Name of the Pilot (can be empty): ");
@@ -406,6 +455,8 @@ public class DBproject{
 		catch(SQLException e){
 			System.out.println("Error, Pilot with this ID already Exists! Please try again.");
 			System.out.println("Err: " + e);
+			System.out.println("------------------------------------------------------------------");
+			System.out.println();
 			return;
 		}		
 		System.out.println("------------------------------------------------------------------");
@@ -417,7 +468,7 @@ public class DBproject{
 		// Given a pilot, plane and flight, adds a flight in the DB
 		
 		Scanner input = new Scanner(System.in);
-		String flightNum;
+		Integer flightNum = -1;
 		String cost = "a";
 		String num_sold = "a";
 		String num_stops = "a";
@@ -435,12 +486,34 @@ public class DBproject{
 		String PilotID = "a";
 		String PlaneID = "a";
 		Boolean isValid = false;
-		
+		List<List<String>> res;		
+
 		DateTimeFormatter ft = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 		String tempDate;
 
-		System.out.print("Enter Flight Number: ");
-		flightNum = input.nextLine();
+//		System.out.print("Enter Flight Number: ");
+//		flightNum = input.nextLine();
+
+		query = "SELECT MAX(fnum) FROM Flight;";
+//		System.out.println(query);
+		try{
+			res = esql.executeQueryAndReturnResult(query);
+			for (List<String> l1 : res) {
+			   for (String s : l1) {
+//			   	System.out.print(s + " "); 
+				flightNum = Integer.parseInt(s);
+			   }
+//			   System.out.println();
+			} 
+			flightNum += 1;
+		}
+		catch(SQLException e){
+			System.out.println("ERR in Getting Flight number");
+			System.out.println("Err: " + e);
+			System.out.println("------------------------------------------------------------------");
+			System.out.println();
+		}
+
 
 		while(!cost.matches("[0-9]+")){
 			System.out.print("Enter Cost: ");
@@ -563,7 +636,6 @@ public class DBproject{
 		System.out.println("Arrival Airport: " + arrival_airport);
 		System.out.println("Departure Airpot: " + departure_airport);	
 
-
 		query = "INSERT INTO Flight (fnum, cost, num_sold, num_stops, actual_departure_date, actual_arrival_date, arrival_airport, departure_airport) VALUES (" + flightNum + ", " + cost + ", " + num_sold + ", " + num_stops + ", \'" + dDate + "\', \'" + aDate + "\', \'" + arrival_airport + "\', \'" + departure_airport + "\');";
 		//System.out.println(query);
 		try{
@@ -572,31 +644,13 @@ public class DBproject{
 		catch(SQLException e){
 			System.out.println("Flight Already Exists! Please try again.");
 			System.out.println("Err: " + e);
+			System.out.println("------------------------------------------------------------------");
+			System.out.println();
+
 			return;
 		}
 
 		System.out.println();
-		System.out.println("------------------------------------------------------------------");
-		System.out.println("------------------------------------------------------------------");
-
-		System.out.println("Adding to Schedule");
-		System.out.println("ID: " + flightNum);
-		System.out.println("Flight Number: " + flightNum);
-		System.out.println("Scheduled Departure Date: " + sdDate); 
-		System.out.println("Scheduled Arrival Date: " + saDate);
-
-		query = "INSERT INTO Schedule (id, flightNum, departure_time, arrival_time) VALUES (" + flightNum + ", " + flightNum + ", \'" + sdDate + "\', \'" + saDate + "\');";
-
-		System.out.println(query);
-		try{
-			esql.executeUpdate(query);
-		}
-		catch(SQLException e){
-			System.out.println("Flight has already been scheduled! Please try again.");
-			System.out.println("Err: " + e);
-			return;
-		}
-
 		System.out.println("------------------------------------------------------------------");
 		System.out.println("------------------------------------------------------------------");
 
@@ -614,27 +668,76 @@ public class DBproject{
 		catch(SQLException e){
 			System.out.println("Error in adding Flight Information, please make sure PilotID, PlaneID, and Flight Number exist and the Flight is not already schedule.");
 			System.out.println("Err: " + e);
+			System.out.println("------------------------------------------------------------------");
+			System.out.println();
+			return;
+		}
+
+		System.out.println("------------------------------------------------------------------");
+//		System.out.println();
+		System.out.println("------------------------------------------------------------------");
+
+		System.out.println("Adding to Schedule");
+		System.out.println("ID: " + flightNum);
+		System.out.println("Flight Number: " + flightNum);
+		System.out.println("Scheduled Departure Date: " + sdDate); 
+		System.out.println("Scheduled Arrival Date: " + saDate);
+
+		query = "INSERT INTO Schedule (id, flightNum, departure_time, arrival_time) VALUES (" + flightNum + ", " + flightNum + ", \'" + sdDate + "\', \'" + saDate + "\');";
+
+		System.out.println(query);
+		try{
+			esql.executeUpdate(query);
+		}
+		catch(SQLException e){
+			System.out.println("Flight has already been scheduled! Please try again.");
+			System.out.println("Err: " + e);
+			System.out.println("------------------------------------------------------------------");
+			System.out.println();
 			return;
 		}
 
 		System.out.println("------------------------------------------------------------------");
 		System.out.println();
-	}
+}
 
 	public static void AddTechnician(DBproject esql) {//4
 
-		String id = "a";
+		Integer id = -1;
 		String fullName = "1";
 		String query;
 		Scanner input = new Scanner(System.in);
+		List<List<String>> res;
 
-		while(!id.matches("[0-9]+")){
+		query = "SELECT MAX(id) FROM Technician;";
+//		System.out.println(query);
+		try{
+			res = esql.executeQueryAndReturnResult(query);
+			for (List<String> l1 : res) {
+			   for (String s : l1) {
+//			   	System.out.print(s + " "); 
+				id = Integer.parseInt(s);
+			   }
+//			   System.out.println();
+			} 
+			id += 1;
+		}
+		catch(SQLException e){
+			System.out.println("ERR in Getting Technician ID");
+			System.out.println("Err: " + e);
+			System.out.println("------------------------------------------------------------------");
+			System.out.println();
+
+		}
+
+/*		while(!id.matches("[0-9]+")){
 			System.out.print("Enter Technician ID: ");
 			id = input.nextLine();
 			if(!id.matches("[0-9]+")){
 				System.out.println("Invalid input, please enter a Number");
 			}
 		}
+*/
 		while(fullName.matches(".*\\d+.*")){
 			System.out.print("Enter Full Name of the Technician: ");
 			fullName = input.nextLine();
@@ -657,6 +760,9 @@ public class DBproject{
 		catch(SQLException e){
 			System.out.println("Error, Technician with this ID already exists! Please try again.");
 			System.out.println("Err: " + e);
+			System.out.println("------------------------------------------------------------------");
+			System.out.println();
+			return;
 		}		
 
 		System.out.println("------------------------------------------------------------------");
@@ -733,10 +839,14 @@ public class DBproject{
 		catch(SQLException e){
 			System.out.println("Error, Please make sure that the Flight exists and is properly scheduled! Please try again");
 			System.out.println("Err: " + e);
+			System.out.println("------------------------------------------------------------------");
+			System.out.println();
 			return;
 		}
 		if(numSeats == -1){
 			System.out.println("Flight does not Exist, Please Try Again");
+			System.out.println("------------------------------------------------------------------");
+			System.out.println();
 			return;
 		}
 	
@@ -755,8 +865,11 @@ public class DBproject{
 //			System.out.println(numReserve);
 		}
 		catch(SQLException e){
-			System.out.println("ERR in Getting Plane_ID");
+			System.out.println("ERR in Getting Number of Reservations");
 			System.out.println("Err: " + e);
+			System.out.println("------------------------------------------------------------------");
+			System.out.println();
+			return;
 		}
 
 		query = "SELECT MAX(rnum) FROM Reservation;";
@@ -775,8 +888,11 @@ public class DBproject{
 			System.out.println(currRNum);
 		}
 		catch(SQLException e){
-			System.out.println("ERR in Getting Plane_ID");
+			System.out.println("ERR in Getting the Number of Reservations");
 			System.out.println("Err: " + e);
+			System.out.println("------------------------------------------------------------------");
+			System.out.println();
+
 		}
 
 //		System.out.println(numSeats-numReserve);
@@ -800,8 +916,11 @@ public class DBproject{
 			esql.executeUpdate(query);
 		}
 		catch(SQLException e){
-			System.out.println("ERR in Adding Pilot SQL");
+			System.out.println("Error Reserving a Seat, Please make sure CustomerID and FlightNumber are valid!");
 			System.out.println("Err: " + e);
+			System.out.println("------------------------------------------------------------------");
+			System.out.println();
+			return;
 		}		
 
 		System.out.println("------------------------------------------------------------------");
@@ -864,6 +983,8 @@ public class DBproject{
 		catch(SQLException e){
 			System.out.println("ERR in Getting the Seats from the Flight. Please make sure the plane is properly scheduled. Please Try Again.");
 			System.out.println("Err: " + e);
+			System.out.println("------------------------------------------------------------------");
+			System.out.println();
 			return;
 		}
 		if(numSeats == -1){
@@ -887,6 +1008,8 @@ public class DBproject{
 		catch(SQLException e){
 			System.out.println("ERR in Getting the number of Reservations");
 			System.out.println("Err: " + e);
+			System.out.println("------------------------------------------------------------------");
+			System.out.println();
 			return;
 		}
 
@@ -953,7 +1076,7 @@ public class DBproject{
 		System.out.println("------------------------------------------------------------------");
 
 		System.out.println("Flight Number: " + flightNum);
-		System.out.println("Schedule Date of Departure: " + sched_dep);
+		System.out.println("Scheduled Date of Departure: " + sched_dep);
 
 		query = "SELECT P.seats FROM Plane P, Schedule S, FlightInfo F WHERE S.flightNum = " + flightNum + " AND S.departure_time = \'" + sched_dep + "\' AND S.flightNum = F.flight_id AND F.plane_id = P.id;";
 		//System.out.println(query);
@@ -971,10 +1094,15 @@ public class DBproject{
 		catch(SQLException e){
 			System.out.println("Err in getting the number of seats for the flight. Please make sure that the flight exists and is properly scheduled. Please try again.");
 			System.out.println("Err: " + e);
+			System.out.println("------------------------------------------------------------------");
+			System.out.println();
 			return;
 		}
 		if(numSeats == -1){
-			System.out.println("Flight Does not Exist");
+			System.out.println("The Flight number given was not schedules to fly on the given date, please check the date and try again");
+ 			System.out.println("------------------------------------------------------------------");
+			System.out.println();
+
 			return;
 		}
 
@@ -994,6 +1122,8 @@ public class DBproject{
 		catch(SQLException e){
 			System.out.println("Err in getting the number of reservations for the flight. Please make sure that the flight exists and is properly scheduled. Please try again.");
 			System.out.println("Err: " + e);
+			System.out.println("------------------------------------------------------------------");
+			System.out.println();
 			return;
 		}
 
@@ -1013,6 +1143,8 @@ public class DBproject{
 		catch(SQLException e){
 			System.out.println("Err in getting the number of waitlist for the flight. Please make sure that the flight exists and is properly scheduled. Please try again.");
 			System.out.println("Err: " + e);
+			System.out.println("------------------------------------------------------------------");
+			System.out.println();
 			return;
 		}
 
@@ -1032,6 +1164,8 @@ public class DBproject{
 		catch(SQLException e){
 			System.out.println("Err in getting the number of completed for the flight. Please make sure that the flight exists and is properly scheduled. Please try again.");
 			System.out.println("Err: " + e);
+			System.out.println("------------------------------------------------------------------");
+			System.out.println();
 			return;
 		}
 
