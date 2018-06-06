@@ -218,3 +218,11 @@ COPY Schedule (
 )
 FROM 'schedule.csv'
 WITH DELIMITER ',';
+
+CREATE INDEX flightMAX ON Flight(fnum);
+CREATE INDEX pilotID ON Pilot(id);
+CREATE INDEX PlaneID ON Plane(id);
+CREATE INDEX TechnicianID ON Technician(id);
+CREATE INDEX ReservationID ON Reservation(rnum);
+CREATE INDEX FlightInfoID ON FlightInfo(fiid);
+
