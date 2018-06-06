@@ -322,16 +322,13 @@ public class DBproject{
 //		id = input.nextLine();
 
 		query = "SELECT MAX(id) FROM Plane;";
-//		System.out.println(query);
 		try{
 			res = esql.executeQueryAndReturnResult(query);
 
 			for (List<String> l1 : res) {
 			   for (String s : l1) {
-//			   	System.out.print(s + " "); 
 				id = Integer.parseInt(s);
 			   }
-//			   System.out.println();
 			} 
 			id += 1;
 		}
@@ -341,11 +338,10 @@ public class DBproject{
 			System.out.println("------------------------------------------------------------------");
 			System.out.println();
 		}
-
-		//while(make.matches(".*\\d+.*")){
+		
+		System.out.println();
 		System.out.print("Enter Make: ");
 		make = input.nextLine();
-		//}
 		System.out.print("Enter Model: ");
 		model = input.nextLine();
 		while(!age.matches("[0-9]+")){
@@ -373,8 +369,6 @@ public class DBproject{
 		System.out.println("Number of Seats: " + seats);
 
 		query = "INSERT INTO Plane (id, make, model, age, seats) VALUES (" + id + ", \'" + make + "\', \'" + model + "\', " + age + ", " + seats + ");";
-		//System.out.println(query);
-		
 		try{
 			esql.executeUpdate(query);
 		}
@@ -399,19 +393,13 @@ public class DBproject{
 		List<List<String>> res;
 		Scanner input = new Scanner(System.in);
 
-//		System.out.print("Enter Pilot ID: ");
-//		id = input.nextLine();
-	
 		query = "SELECT MAX(id) FROM Pilot;";
-//		System.out.println(query);
 		try{
 			res = esql.executeQueryAndReturnResult(query);
 			for (List<String> l1 : res) {
 			   for (String s : l1) {
-//			   	System.out.print(s + " "); 
 				id = Integer.parseInt(s);
 			   }
-//			   System.out.println();
 			} 
 			id += 1;
 		}
@@ -423,7 +411,7 @@ public class DBproject{
 			return;
 		}
 
-
+		System.out.println();
 		while(fullName.matches(".*\\d+.*")){
 			System.out.print("Enter Full Name of the Pilot (can be empty): ");
 			fullName = input.nextLine();
@@ -448,7 +436,6 @@ public class DBproject{
 
 		query = "INSERT INTO Pilot (id, fullname, nationality) VALUES (" + id + ", \'" + fullName + "\', \'" + nationality + "\');";
 
-		//System.out.println(query);
 		try{
 			esql.executeUpdate(query);
 		}
@@ -491,19 +478,14 @@ public class DBproject{
 		DateTimeFormatter ft = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 		String tempDate;
 
-//		System.out.print("Enter Flight Number: ");
-//		flightNum = input.nextLine();
-
 		query = "SELECT MAX(fnum) FROM Flight;";
-//		System.out.println(query);
+		System.out.println();
 		try{
 			res = esql.executeQueryAndReturnResult(query);
 			for (List<String> l1 : res) {
 			   for (String s : l1) {
-//			   	System.out.print(s + " "); 
 				flightNum = Integer.parseInt(s);
 			   }
-//			   System.out.println();
 			} 
 			flightNum += 1;
 		}
@@ -544,7 +526,7 @@ public class DBproject{
 				sched_depart = LocalDateTime.parse(tempDate, ft);
 			}
 			catch(DateTimeException e){
-				System.out.println("Not a Valid Date, Pleased enter Date in the format yyyy-MM-dd");
+				System.out.println("Not a Valid Date, Pleased enter Date in the format yyyy-MM-dd HH:mm");
 				isValid = false;
 			}
 		}
@@ -558,7 +540,7 @@ public class DBproject{
 				sched_arrive = LocalDateTime.parse(tempDate, ft);
 			}
 			catch(DateTimeException e){
-				System.out.println("Not a Valid Date, Pleased enter Date in the format yyyy-MM-dd");
+				System.out.println("Not a Valid Date, Pleased enter Date in the format yyyy-MM-dd HH:mm");
 				isValid = false;
 			}
 		}
@@ -572,7 +554,7 @@ public class DBproject{
 				actual_departure_date = LocalDateTime.parse(tempDate, ft);
 			}
 			catch(DateTimeException e){
-				System.out.println("Not a Valid Date, Pleased enter Date in the format yyyy-MM-dd");
+				System.out.println("Not a Valid Date, Pleased enter Date in the format yyyy-MM-dd HH:mm");
 				isValid = false;
 			}
 		}
@@ -586,7 +568,7 @@ public class DBproject{
 				actual_arrival_date = LocalDateTime.parse(tempDate, ft);
 			}
 			catch(DateTimeException e){
-				System.out.println("Not a Valid Date, Pleased enter Date in the format yyyy-MM-dd");
+				System.out.println("Not a Valid Date, Pleased enter Date in the format yyyy-MM-dd HH:mm");
 				isValid = false;
 			}
 		}
@@ -637,7 +619,6 @@ public class DBproject{
 		System.out.println("Departure Airpot: " + departure_airport);	
 
 		query = "INSERT INTO Flight (fnum, cost, num_sold, num_stops, actual_departure_date, actual_arrival_date, arrival_airport, departure_airport) VALUES (" + flightNum + ", " + cost + ", " + num_sold + ", " + num_stops + ", \'" + dDate + "\', \'" + aDate + "\', \'" + arrival_airport + "\', \'" + departure_airport + "\');";
-		//System.out.println(query);
 		try{
 			esql.executeUpdate(query);
 		}
@@ -661,7 +642,7 @@ public class DBproject{
 		System.out.println("PlaneID: " + PlaneID);
 
 		query = "INSERT INTO FlightInfo (fiid, flight_id, pilot_id, plane_id) VALUES (" + flightNum + ", " + flightNum + ", " + PilotID + ", " + PlaneID + ");";
-		System.out.println(query);
+
 		try{
 			esql.executeUpdate(query);
 		}
@@ -674,7 +655,6 @@ public class DBproject{
 		}
 
 		System.out.println("------------------------------------------------------------------");
-//		System.out.println();
 		System.out.println("------------------------------------------------------------------");
 
 		System.out.println("Adding to Schedule");
@@ -685,7 +665,7 @@ public class DBproject{
 
 		query = "INSERT INTO Schedule (id, flightNum, departure_time, arrival_time) VALUES (" + flightNum + ", " + flightNum + ", \'" + sdDate + "\', \'" + saDate + "\');";
 
-		System.out.println(query);
+
 		try{
 			esql.executeUpdate(query);
 		}
@@ -710,15 +690,12 @@ public class DBproject{
 		List<List<String>> res;
 
 		query = "SELECT MAX(id) FROM Technician;";
-//		System.out.println(query);
 		try{
 			res = esql.executeQueryAndReturnResult(query);
 			for (List<String> l1 : res) {
 			   for (String s : l1) {
-//			   	System.out.print(s + " "); 
 				id = Integer.parseInt(s);
 			   }
-//			   System.out.println();
 			} 
 			id += 1;
 		}
@@ -730,14 +707,7 @@ public class DBproject{
 
 		}
 
-/*		while(!id.matches("[0-9]+")){
-			System.out.print("Enter Technician ID: ");
-			id = input.nextLine();
-			if(!id.matches("[0-9]+")){
-				System.out.println("Invalid input, please enter a Number");
-			}
-		}
-*/
+		System.out.println();
 		while(fullName.matches(".*\\d+.*")){
 			System.out.print("Enter Full Name of the Technician: ");
 			fullName = input.nextLine();
@@ -753,7 +723,6 @@ public class DBproject{
 		System.out.println("Full Name: " + fullName);
 
 		query = "INSERT INTO Technician (id, full_name) VALUES (" + id + ", \'" + fullName + "\');";
-//		System.out.println(quiery);
 		try{
 			esql.executeUpdate(query);
 		}
@@ -787,6 +756,7 @@ public class DBproject{
 		Character status = 'R';
 		Boolean isValid = false;
 
+		System.out.println();
 		while(!flightNum.matches("[0-9]+")){
 			System.out.print("Enter Flight Number: ");
 			flightNum = input.nextLine();
@@ -868,25 +838,19 @@ public class DBproject{
 				}
 				else{
 					sched_dep = res.get(0).get(pos);
-				//	System.out.println(sched_dep);
-				//	return;
 				}
 			}
 		}
 	
 //		query = "SELECT COUNT(*) FROM Reservation R, Schedule S WHERE S.flightNum = " + flightNum + " AND " + "S.departure_time = \'" + sched_dep + "\' AND " + "R.fid = " + flightNum + " AND R.status = 'R';";
 		query = "SELECT COUNT(*) FROM Reservation WHERE fid = " + flightNum + " AND status = 'R';";
-//		System.out.println(query);
 		try{
 			res = esql.executeQueryAndReturnResult(query);
 			for (List<String> l1 : res) {
 			   for (String s : l1) {
-//			   	System.out.print(s + " "); 
 				numReserve = Integer.parseInt(s);
 			   }
-//			   System.out.println();
 			} 
-//			System.out.println(numReserve);
 		}
 		catch(SQLException e){
 			System.out.println("ERR in Getting Number of Reservations");
@@ -897,19 +861,15 @@ public class DBproject{
 		}
 
 		query = "SELECT MAX(rnum) FROM Reservation;";
-		//System.out.println(query);
 		try{
 			res = esql.executeQueryAndReturnResult(query);
 
 			for (List<String> l1 : res) {
 			   for (String s : l1) {
-//			   	System.out.print(s + " "); 
 				currRNum = Integer.parseInt(s);
 			   }
-//			   System.out.println();
 			} 
 			currRNum += 1;
-		//	System.out.println(currRNum);
 		}
 		catch(SQLException e){
 			System.out.println("ERR in Getting the Number of Reservations");
@@ -918,8 +878,6 @@ public class DBproject{
 			System.out.println();
 
 		}
-
-//		System.out.println(numSeats-numReserve);
 		if((numSeats-numReserve) <= 0){
 			System.out.print("The Flight is full, would you like to be waitlisted? (y/n)");
 			String temp = input.nextLine();
@@ -935,7 +893,6 @@ public class DBproject{
 		}
 
 		query = "INSERT INTO Reservation (rnum, cid, fid, status) VALUES (" + currRNum + ", " + customerID + ", " + flightNum + ", \'" + status + "\');";
-//		System.out.println(query);
 		try{
 			esql.executeUpdate(query);
 		}
@@ -965,6 +922,7 @@ public class DBproject{
 		Integer numReserve = -1;
 		Boolean isValid = false;
 
+		System.out.println();
 		while(!flightNum.matches("[0-9]+")){
 			System.out.print("Enter Flight Number: ");
 			flightNum = input.nextLine();
@@ -992,17 +950,13 @@ public class DBproject{
 		System.out.println("Date: " + date.toString());
 
 		query = "SELECT P.seats FROM Plane P, Schedule S, FlightInfo F WHERE S.flightNum = " + flightNum + " AND S.departure_time = \'" + sched_dep + "\' AND S.flightNum = F.flight_id AND F.plane_id = P.id;";
-//		System.out.println(query);
 		try{
 			res = esql.executeQueryAndReturnResult(query);
 			for (List<String> l1 : res) {
 			   for (String s : l1) {
-//			   	System.out.print(s + " "); 
 				numSeats = Integer.parseInt(s);
 			   }
-//			   System.out.println();
 			} 
-//			System.out.println(numSeats);
 		}
 		catch(SQLException e){
 			System.out.println("ERR in Getting the Seats from the Flight. Please make sure the plane is properly scheduled. Please Try Again.");
@@ -1056,24 +1010,18 @@ public class DBproject{
 				}
 				else{
 					sched_dep = res.get(0).get(pos);
-				//	System.out.println(sched_dep);
-				//	return;
 				}
 			}
 		}
 
 		query = "SELECT COUNT(*) FROM Reservation WHERE fid = " + flightNum + " AND (status = 'R' OR status = 'C');";
-//		System.out.println(query);
 		try{
 			res = esql.executeQueryAndReturnResult(query);
 			for (List<String> l1 : res) {
 			   for (String s : l1) {
-//			   	System.out.print(s + " "); 
 				numReserve = Integer.parseInt(s);
 			   }
-//			   System.out.println();
 			} 
-//			System.out.println(numReserve);
 		}
 		catch(SQLException e){
 			System.out.println("ERR in Getting the number of Reservations");
@@ -1096,6 +1044,7 @@ public class DBproject{
 		// Count number of repairs per planes and list them in descending order
 		List<List<String>> res;
 		String query;
+		System.out.println();
 		System.out.print("Number of Repairs per Plane: ");
 		System.out.println();
 		query = "SELECT R.plane_id, COUNT(*), P.model FROM Repairs R, Plane P WHERE R.plane_id = P.id GROUP BY R.plane_id, P.model ORDER BY COUNT(*) DESC;";
@@ -1116,7 +1065,6 @@ public class DBproject{
 			    System.out.println("--------------------------------------------------------------------------------------------------------------");
 	              
 			} 
-//			System.out.println(numReserve);
        		}
        		catch(SQLException e){
 		   	System.err.println(e.getMessage());
@@ -1128,11 +1076,8 @@ public class DBproject{
 		// Count repairs per year and list them in ascending order
 		List<List<String>> res;
 		String query;
-		
-		System.out.println("------------------------------------------------------------------");
 		System.out.println();
 		query = "SELECT EXTRACT(YEAR FROM R.repair_date), COUNT(*) FROM Repairs R GROUP BY EXTRACT(YEAR FROM (R.repair_date)) ORDER BY COUNT(*) ASC;";
-
 		System.out.println("Number of Repairs per Year: ");
 		System.out.println();
 		try{
@@ -1150,7 +1095,6 @@ public class DBproject{
   		            System.out.println();
 			    System.out.println("----------------------------------------------------------");    
 			} 
-//			System.out.println(numReserve);
        		}
        		catch(SQLException e){
 		   	System.err.println(e.getMessage());
@@ -1177,7 +1121,7 @@ public class DBproject{
 		Integer numReserve = 0;
 		Integer numWaitlist = 0;
 		Integer Completed = 0;
-
+		System.out.println();
 		while(!flightNum.matches("[0-9]+")){
 			System.out.print("Enter Flight Number: ");
 			flightNum = input.nextLine();
@@ -1251,24 +1195,20 @@ public class DBproject{
 					}
 					else{
 						sched_dep = res.get(0).get(pos);
-					//	System.out.println(sched_dep);
-					//	return;
 					}
 				}
 			}
 
 		query = "SELECT COUNT(*) FROM Reservation R, Schedule S, FlightInfo F WHERE S.flightNum = " + flightNum + " AND S.departure_time = \'" + sched_dep + "\' AND S.flightNum = F.flight_id AND R.fid = S.flightNum AND R.status = 'R';";
-		//System.out.println(query);
+
 		try{
 			res = esql.executeQueryAndReturnResult(query);
 			for (List<String> l1 : res) {
 			   for (String s : l1) {
-//			   	System.out.print(s + " "); 
+
 				numReserve = Integer.parseInt(s);
 			   }
-//			   System.out.println();
 			} 
-//			System.out.println(numSeats);
 		}
 		catch(SQLException e){
 			System.out.println("Err in getting the number of reservations for the flight. Please make sure that the flight exists and is properly scheduled. Please try again.");
@@ -1279,17 +1219,13 @@ public class DBproject{
 		}
 
 		query = "SELECT COUNT(*) FROM Reservation R, Schedule S, FlightInfo F WHERE S.flightNum = " + flightNum + " AND S.departure_time = \'" + sched_dep + "\' AND S.flightNum = F.flight_id AND R.fid = S.flightNum AND R.status = 'W';";
-		//System.out.println(query);
 		try{
 			res = esql.executeQueryAndReturnResult(query);
 			for (List<String> l1 : res) {
 			   for (String s : l1) {
-//			   	System.out.print(s + " "); 
 				numWaitlist = Integer.parseInt(s);
 			   }
-//			   System.out.println();
 			} 
-//			System.out.println(numSeats);
 		}
 		catch(SQLException e){
 			System.out.println("Err in getting the number of waitlist for the flight. Please make sure that the flight exists and is properly scheduled. Please try again.");
@@ -1300,17 +1236,13 @@ public class DBproject{
 		}
 
 		query = "SELECT COUNT(*) FROM Reservation R, Schedule S, FlightInfo F WHERE S.flightNum = " + flightNum + " AND S.departure_time = \'" + sched_dep + "\' AND S.flightNum = F.flight_id AND R.fid = S.flightNum AND R.status = 'C';";
-		//System.out.println(query);
 		try{
 			res = esql.executeQueryAndReturnResult(query);
 			for (List<String> l1 : res) {
 			   for (String s : l1) {
-//			   	System.out.print(s + " "); 
 				Completed = Integer.parseInt(s);
 			   }
-//			   System.out.println();
 			} 
-//			System.out.println(numSeats);
 		}
 		catch(SQLException e){
 			System.out.println("Err in getting the number of completed for the flight. Please make sure that the flight exists and is properly scheduled. Please try again.");
